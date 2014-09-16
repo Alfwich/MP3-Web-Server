@@ -5,39 +5,41 @@ import BaseHTTPServer
 import SimpleHTTPServer
 import os
 
-FILE = 'index.html'
+MUSIC_DIRECTORY = "music/*"
 PORT = 8080
 
+def exeC( cmd ):
+  os.system( cmd )
+
+# Mp3 player commands
 def startSServer():
-  os.system( "mocp -S" )
+  print( "Starting server" )
+  exeC( "mocp -S" )
 
 def play():
-  print "will play"
-  os.system( "mocp -q music/*.mp3 -p" )
-  return "Will Play"
+  print( "play" );
+  exeC( "mocp -q %s -p" % MUSIC_DIRECTORY )
 
 def pause():
-  print "will pause"
-  os.system( "mocp --toggle-pause" )
-  return "Will pause"
+  print "pause"
+  exeC( "mocp --toggle-pause" )
 
 def stop():
-  print "will stop"
-  os.system( "mocp -c -s" )
-  return "Will Stop"
+  print "stop"
+  exeC( "mocp -c -s" )
+  play.isPlaying = False
 
 def next():
   print "next track"
-  os.system( "mocp --next" )
-  return "Next Track"
+  exeC( "mocp --next" )
 
 def prev():
   print "prev track"
-  os.system( "mocp --prev" )
-  return "Prev track"
+  exeC( "mocp --prev" )
 
 class Mp3Handler(SimpleHTTPServer.SimpleHTTPRequestHandler):
 
+    serverStarted = False
     def getPostData(self):
       result = {}
       form = cgi.FieldStorage(
@@ -50,23 +52,32 @@ class Mp3Handler(SimpleHTTPServer.SimpleHTTPRequestHandler):
       for item in form.list:
         result[item.name] = item.value
       return result
-    
+
     def do_POST(self):
       """Handle a post request by returning the square of the number."""
       response = "Invalid command"
+
+      # Start the sound server if it has not already been attempted to be started
+      if not Mp3Handler.serverStarted:
+        startSServer()
+        Mp3Handler.serverStarted = True
+
+      # Handle the command from the web client
       post = self.getPostData()
       if "action" in post:
         action = post["action"]
         if action == "play":
-          response = play()
+          play()
         elif action == "stop":
-          response = stop()
+          stop()
         elif action == "pause":
-          response = pause()
+          pause()
         elif action == "next":
-          response = next()
+          next()
         elif action == "prev":
-          response = prev()
+          prev()
+
+        response = "Command '%s' executed" % action
         
       self.wfile.write(response)
 
@@ -77,5 +88,5 @@ def start_server():
     server.serve_forever()
 
 if __name__ == "__main__":
-    startSServer()
+    print( "Started moc server and web server on port: %s." % PORT )
     start_server()
