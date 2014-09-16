@@ -5,7 +5,7 @@ import BaseHTTPServer
 import SimpleHTTPServer
 import os
 
-MUSIC_DIRECTORY = "music/*"
+MOUNT_DIRECTORY = "/media/"
 PORT = 8080
 
 def exeC( cmd ):
@@ -18,7 +18,7 @@ def startSServer():
 
 def play():
   print( "play" );
-  exeC( "mocp -q %s -p" % MUSIC_DIRECTORY )
+  exeC( "mocp -a %s -p" % MOUNT_DIRECTORY )
 
 def pause():
   print "pause"

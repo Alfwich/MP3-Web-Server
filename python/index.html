@@ -2,6 +2,7 @@
 <head>
 <title>Network Mp3 Player</title>
 <script src="jq.js"></script>
+<link rel="stylesheet" type="text/css" href="app.css">
 </head>
 <body>
 <script type="text/javascript">
@@ -16,11 +17,14 @@ var playerAction = function(action) {
 	});
 }
 </script>
-<button onClick="playerAction('play');">Play</button>
-<button onClick="playerAction('pause');">Pause</button>
-<button onClick="playerAction('next');">Next</button>
-<button onClick="playerAction('prev');">Prev</button>
-<button onClick="playerAction('stop');">Stop</button>
+<div id="controls">
+	<h1> Mp3 Web Player </h1>
+	<button class="play" onClick="playerAction('play');">Play</button>
+	<button class="pause" onClick="playerAction('pause');">Pause</button>
+	<button class="next" onClick="playerAction('next');">Next</button>
+	<button class="prev" onClick="playerAction('prev');">Prev</button>
+	<button class="stop" onClick="playerAction('stop');">Stop</button>
+</div>
 
 </body>
 </html>
