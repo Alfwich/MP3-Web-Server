@@ -1,0 +1,26 @@
+<html>
+<head>
+<title>Network Mp3 Player</title>
+<script src="jq.js"></script>
+</head>
+<body>
+<script type="text/javascript">
+var playerAction = function(action) {
+	$.ajax({
+		type: "POST",
+		url: "index.html",
+		data: { action: action }
+	})
+		.done(function( data ) {
+			console.log( data );
+	});
+}
+</script>
+<button onClick="playerAction('play');">Play</button>
+<button onClick="playerAction('pause');">Pause</button>
+<button onClick="playerAction('next');">Next</button>
+<button onClick="playerAction('prev');">Prev</button>
+<button onClick="playerAction('stop');">Stop</button>
+
+</body>
+</html>
