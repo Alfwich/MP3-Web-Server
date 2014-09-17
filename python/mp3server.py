@@ -4,38 +4,52 @@ import cgi
 import BaseHTTPServer
 import SimpleHTTPServer
 import os
+import sys
+import subprocess
 
 MOUNT_DIRECTORY = "/media/"
 PORT = 8080
 
-def exeC( cmd ):
-  os.system( cmd )
+if len( sys.argv ) > 1:
+	try:
+		PORT = int(sys.argv[1])
+	except ValueError:
+		print "Port is not an int. Defaulting to 8080"
+		PORT = 8080
+
+if len( sys.argv ) > 2:
+	MOUNT_DIRECTORY = sys.argv[2]
+
+def exeC( cmd, prams="" ):
+	os.system( "%s %s" % ( cmd, prams ) )
+	#subprocess.call( [ cmd, prams ], shell=True )
 
 # Mp3 player commands
 def startSServer():
   print( "Starting server" )
-  exeC( "mocp -S" )
+  exeC( "mocp", "-x" )
+  exeC( "mocp", "-S" )
 
 def play():
   print( "play" );
-  exeC( "mocp -a %s -p" % MOUNT_DIRECTORY )
+  exeC( "mocp", "-p -a %s" % MOUNT_DIRECTORY )
 
 def pause():
   print "pause"
-  exeC( "mocp --toggle-pause" )
+  exeC( "mocp", "--toggle-pause" )
 
 def stop():
   print "stop"
-  exeC( "mocp -c -s" )
+  exeC( "mocp", "-c -s" )
   play.isPlaying = False
 
 def next():
   print "next track"
-  exeC( "mocp --next" )
+  exeC( "mocp", "--next" )
 
 def prev():
   print "prev track"
-  exeC( "mocp --prev" )
+  exeC( "mocp", "--prev" )
 
 class Mp3Handler(SimpleHTTPServer.SimpleHTTPRequestHandler):
 
@@ -54,7 +68,6 @@ class Mp3Handler(SimpleHTTPServer.SimpleHTTPRequestHandler):
       return result
 
     def do_POST(self):
-      """Handle a post request by returning the square of the number."""
       response = "Invalid command"
 
       # Start the sound server if it has not already been attempted to be started
@@ -88,5 +101,8 @@ def start_server():
     server.serve_forever()
 
 if __name__ == "__main__":
-    print( "Started moc server and web server on port: %s." % PORT )
+    print( "Started moc server and web server on port: %s, reading music recursivly from directory: %s" % ( PORT, MOUNT_DIRECTORY ) )
     start_server()
+
+
+
