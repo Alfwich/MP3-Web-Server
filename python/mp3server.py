@@ -51,6 +51,10 @@ def prev():
   print "prev track"
   exeC( "mocp", "--prev" )
 
+def shuffle():
+  print "toggle shuffle"
+  exeC( "mocp", "--toggle shuffle" )
+
 class Mp3Handler(SimpleHTTPServer.SimpleHTTPRequestHandler):
 
     serverStarted = False
@@ -79,6 +83,7 @@ class Mp3Handler(SimpleHTTPServer.SimpleHTTPRequestHandler):
       post = self.getPostData()
       if "action" in post:
         action = post["action"]
+        response = "Command '%s' executed" % action
         if action == "play":
           play()
         elif action == "stop":
@@ -89,13 +94,15 @@ class Mp3Handler(SimpleHTTPServer.SimpleHTTPRequestHandler):
           next()
         elif action == "prev":
           prev()
+        elif action == "shuffle":
+          shuffle()
+        else:
+          response = "Command '%s' not found" % action
 
-        response = "Command '%s' executed" % action
         
       self.wfile.write(response)
 
 def start_server():
-    """Start the server."""
     server_address = ("", PORT)
     server = BaseHTTPServer.HTTPServer(server_address, Mp3Handler)
     server.serve_forever()

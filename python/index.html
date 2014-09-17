@@ -6,10 +6,11 @@
 </head>
 <body>
 <script type="text/javascript">
+var URL = "index.html";
 var playerAction = function(action) {
 	$.ajax({
 		type: "POST",
-		url: "index.html",
+		url: URL,
 		data: { action: action }
 	})
 		.done(function( data ) {
@@ -20,8 +21,9 @@ var playerAction = function(action) {
 <div id="controls">
 	<button class="play" onClick="playerAction('play');">Play</button>
 	<button class="pause" onClick="playerAction('pause');">Pause</button>
-	<button class="next" onClick="playerAction('next');">Next</button>
 	<button class="prev" onClick="playerAction('prev');">Prev</button>
+	<button class="next" onClick="playerAction('next');">Next</button>
+	<button class="shuffle" onClick="playerAction('shuffle');">Shuffle</button>
 	<button class="stop" onClick="playerAction('stop');">Stop</button>
 </div>
 
