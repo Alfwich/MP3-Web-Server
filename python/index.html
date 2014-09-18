@@ -14,9 +14,32 @@ var playerAction = function(action) {
 		data: { action: action }
 	})
 		.done(function( data ) {
-			console.log( data );
+      if( action == "info" ) {
+        renderInfo(data);
+      } else {
+        console.log( data );
+      }
 	});
 }
+
+var renderInfo = function(info) {
+  info = jQuery.parseJSON( info );
+  var table = $("<table>");
+  for( i in info ) {
+    var row = $("<tr>")
+
+    var label = $("<td>", { text:i } );
+    var data = $("<tr>", {text:info[i]} );
+
+    table.append( row.append( label, data ) );
+  }
+
+  $("#info").empty().append( table );
+  setTimeout( function(){ playerAction('info'); }, 1000 );
+}
+
+setTimeout( function(){ playerAction('info'); }, 1000 );
+
 </script>
 <div id="controls">
 	<button class="play" onClick="playerAction('play');">Play</button>
@@ -25,6 +48,8 @@ var playerAction = function(action) {
 	<button class="next" onClick="playerAction('next');">Next</button>
 	<button class="shuffle" onClick="playerAction('shuffle');">Shuffle</button>
 	<button class="stop" onClick="playerAction('stop');">Stop</button>
+</div>
+<div id="info">
 </div>
 
 </body>

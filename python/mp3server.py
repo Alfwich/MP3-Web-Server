@@ -5,7 +5,8 @@ import BaseHTTPServer
 import SimpleHTTPServer
 import os
 import sys
-import subprocess
+import json
+from subprocess import *
 
 MOUNT_DIRECTORY = "/media/"
 PORT = 8080
@@ -22,7 +23,6 @@ if len( sys.argv ) > 2:
 
 def exeC( cmd, prams="" ):
 	os.system( "%s %s" % ( cmd, prams ) )
-	#subprocess.call( [ cmd, prams ], shell=True )
 
 # Mp3 player commands
 def startSServer():
@@ -71,6 +71,23 @@ class Mp3Handler(SimpleHTTPServer.SimpleHTTPRequestHandler):
         result[item.name] = item.value
       return result
 
+    def getMOCInfo(self):
+      output = {}
+
+      # Get the information from the mocp process
+      raw = Popen(["mocp", "-i"], stdout=PIPE).communicate()[0]
+
+      # Format the string into a understandable format
+      raw = raw.split("\n")[0:-1] # Remove the last element
+
+      # Pack the information into a dict and return that
+      for pair in raw:
+        info = pair.split(": ")
+        if( len(info) == 2 ):
+          output[info[0]] = info[1]
+
+      return output
+
     def do_POST(self):
       response = "Invalid command"
 
@@ -96,6 +113,8 @@ class Mp3Handler(SimpleHTTPServer.SimpleHTTPRequestHandler):
           prev()
         elif action == "shuffle":
           shuffle()
+        elif action == "info":
+          response = json.dumps(self.getMOCInfo())
         else:
           response = "Command '%s' not found" % action
 

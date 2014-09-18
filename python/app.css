@@ -10,16 +10,10 @@ body {
 button {
 	font-size: 60px;
 	width:100%;
-	height: 150px;
-	background-color:#8383FF;
-	border: 2px solid #4F5DFF;
-	border-radius: 10px;
-	margin-top: 20px;
+	margin-top: 10px;
 }
 
 button.stop {
-	background-color:#FF5762;
-	border: 2px solid #FF3D3D;
 }
 
 /*
@@ -36,6 +30,10 @@ button.stop {
 	padding: 3px;
 }
 */
+
+tr {
+	color: #FFF;
+}
 
 #controls > h1 {
 	padding-bottom: 10px;
