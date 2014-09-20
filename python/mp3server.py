@@ -90,6 +90,13 @@ class Mp3Handler(SimpleHTTPServer.SimpleHTTPRequestHandler):
           output[info[0]] = info[1]
 
       return output
+      
+      
+    def getIPInfo(self):
+    	output = {}
+	raw = Popen(["ifconfig", ""], stdout=PIPE).communicate()[0]
+	output["ip"] = raw
+	return output
 
     def do_POST(self):
       response = "Invalid command"
@@ -120,6 +127,8 @@ class Mp3Handler(SimpleHTTPServer.SimpleHTTPRequestHandler):
 					reboot()
         elif action == "info":
           response = json.dumps(self.getMOCInfo())
+        elif action == "ip":
+          response = json.dumps(self.getIPInfo())
         else:
           response = "Command '%s' not found" % action
 
