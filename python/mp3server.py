@@ -55,6 +55,9 @@ def shuffle():
   print "toggle shuffle"
   exeC( "mocp", "--toggle shuffle" )
 
+def reboot():
+	exeC( "reboot" )
+
 class Mp3Handler(SimpleHTTPServer.SimpleHTTPRequestHandler):
 
     serverStarted = False
@@ -113,6 +116,8 @@ class Mp3Handler(SimpleHTTPServer.SimpleHTTPRequestHandler):
           prev()
         elif action == "shuffle":
           shuffle()
+        elif action == "reboot":
+					reboot()
         elif action == "info":
           response = json.dumps(self.getMOCInfo())
         else:

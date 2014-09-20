@@ -3,6 +3,7 @@
 <title>Network Mp3 Player</title>
 <script src="jq.js"></script>
 <link rel="stylesheet" type="text/css" href="app.css">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0, user-scalable=yes", target-densitydpi=device-dpi />
 </head>
 <body>
 <script type="text/javascript">
@@ -48,6 +49,7 @@ setTimeout( function(){ playerAction('info'); }, 1000 );
 	<button class="next" onClick="playerAction('next');">Next</button>
 	<button class="shuffle" onClick="playerAction('shuffle');">Shuffle</button>
 	<button class="stop" onClick="playerAction('stop');">Stop</button>
+	<button class="reboot" onClick="playerAction('reboot');">Restart Server</button>
 </div>
 <div id="info">
 </div>
