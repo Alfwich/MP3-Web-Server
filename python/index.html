@@ -30,13 +30,12 @@ var renderInfo = function(info) {
     var row = $("<tr>")
 
     var label = $("<td>", { text:i } );
-    var data = $("<tr>", {text:info[i]} );
+    var data = $("<td>", {text:info[i]} );
 
-    table.append( row.append( label, data ) );
+    table.append( row.append( data ) );
   }
 
   $("#info").empty().append( table );
-  setTimeout( function(){ playerAction('info'); }, 1000 );
 }
 
 //setTimeout( function(){ playerAction('info'); }, 1000 );
@@ -49,9 +48,10 @@ var renderInfo = function(info) {
 	<button class="next" onClick="playerAction('next');">Next</button>
 	<button class="shuffle" onClick="playerAction('shuffle');">Shuffle</button>
 	<button class="stop" onClick="playerAction('stop');">Stop</button>
-	<hr>
-	<button class="ip" onClick="playerAction('ip');">Display IP</button>		
-	<button class="reboot" onClick="playerAction('reboot');">Restart Server</button>
+	<hr class="control">
+	<button class="ip danger" onClick="playerAction('ip');">Display IP</button>		
+	<button class="info danger" onClick="playerAction('info');">Display Info</button>		
+	<button class="reboot danger" onClick="playerAction('reboot');">Restart Server</button>
 </div>
 <div id="info">
 </div>

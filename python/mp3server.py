@@ -18,11 +18,14 @@ if len( sys.argv ) > 1:
 		print "Port is not an int. Defaulting to 8080"
 		PORT = 8080
 
+if PORT == 8080:
+  print( "Server starting on default port. Some features will be disabled while on the default port." )
+
 if len( sys.argv ) > 2:
 	MOUNT_DIRECTORY = sys.argv[2]
 
 def exeC( cmd, prams="" ):
-	os.system( "%s %s" % ( cmd, prams ) )
+  os.system( "%s %s" % ( cmd, prams ) )
 
 # Mp3 player commands
 def startSServer():
@@ -56,7 +59,9 @@ def shuffle():
   exeC( "mocp", "--toggle shuffle" )
 
 def reboot():
-	exeC( "reboot" )
+  # Disable reboot button on default port
+  if( PORT != 8080 ):
+    exeC( "reboot" )
 
 class Mp3Handler(SimpleHTTPServer.SimpleHTTPRequestHandler):
 
@@ -74,66 +79,67 @@ class Mp3Handler(SimpleHTTPServer.SimpleHTTPRequestHandler):
         result[item.name] = item.value
       return result
 
-    def getMOCInfo(self):
+    def getCommandOutput(self, command):
       output = {}
 
       # Get the information from the mocp process
-      raw = Popen(["mocp", "-i"], stdout=PIPE).communicate()[0]
+      raw = Popen(command, stdout=PIPE).communicate()[0]
 
       # Format the string into a understandable format
       raw = raw.split("\n")[0:-1] # Remove the last element
 
       # Pack the information into a dict and return that
-      for pair in raw:
-        info = pair.split(": ")
-        if( len(info) == 2 ):
-          output[info[0]] = info[1]
+      for i in range(0, len(raw) ):
+        output[i] = raw[i]
 
       return output
       
       
     def getIPInfo(self):
-    	output = {}
-	raw = Popen(["ifconfig", ""], stdout=PIPE).communicate()[0]
-	output["ip"] = raw
-	return output
+      output = {}
+      raw = Popen(["ifconfig"], stdout=PIPE).communicate()[0]
+      output["ip"] = raw
+      return output
 
     def do_POST(self):
-      response = "Invalid command"
+      try:
+        response = "Invalid command"
 
-      # Start the sound server if it has not already been attempted to be started
-      if not Mp3Handler.serverStarted:
-        startSServer()
-        Mp3Handler.serverStarted = True
+        # Start the sound server if it has not already been attempted to be started
+        if not Mp3Handler.serverStarted:
+          startSServer()
+          Mp3Handler.serverStarted = True
 
-      # Handle the command from the web client
-      post = self.getPostData()
-      if "action" in post:
-        action = post["action"]
-        response = "Command '%s' executed" % action
-        if action == "play":
-          play()
-        elif action == "stop":
-          stop()
-        elif action == "pause":
-          pause()
-        elif action == "next":
-          next()
-        elif action == "prev":
-          prev()
-        elif action == "shuffle":
-          shuffle()
-        elif action == "reboot":
-					reboot()
-        elif action == "info":
-          response = json.dumps(self.getMOCInfo())
-        elif action == "ip":
-          response = json.dumps(self.getIPInfo())
-        else:
-          response = "Command '%s' not found" % action
+        # Handle the command from the web client
+        post = self.getPostData()
+        if "action" in post:
+          action = post["action"]
+          response = "Command '%s' executed" % action
+          if action == "play":
+            play()
+          elif action == "stop":
+            stop()
+          elif action == "pause":
+            pause()
+          elif action == "next":
+            next()
+          elif action == "prev":
+            prev()
+          elif action == "shuffle":
+            shuffle()
+          elif action == "reboot":
+            reboot()
+          elif action == "info":
+            response = json.dumps(self.getCommandOutput( ["mocp", "-i"]))
+          elif action == "ip":
+            response = json.dumps(self.getCommandOutput( ["ifconfig"]))
+          else:
+            response = "Command '%s' not found" % action
 
-        
-      self.wfile.write(response)
+          
+        self.wfile.write(response)
+      except:
+        print( "Error in post handler for mp3 server!" )
 
 def start_server():
     server_address = ("", PORT)
