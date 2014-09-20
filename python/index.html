@@ -15,7 +15,7 @@ var playerAction = function(action) {
 		data: { action: action }
 	})
 		.done(function( data ) {
-      if( action == "info" ) {
+      if( action == "info" || action == "ip" ) {
         renderInfo(data);
       } else {
         console.log( data );
@@ -49,6 +49,8 @@ var renderInfo = function(info) {
 	<button class="next" onClick="playerAction('next');">Next</button>
 	<button class="shuffle" onClick="playerAction('shuffle');">Shuffle</button>
 	<button class="stop" onClick="playerAction('stop');">Stop</button>
+	<hr>
+	<button class="ip" onClick="playerAction('ip');">Display IP</button>		
 	<button class="reboot" onClick="playerAction('reboot');">Restart Server</button>
 </div>
 <div id="info">
