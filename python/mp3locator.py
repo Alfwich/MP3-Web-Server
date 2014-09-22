@@ -11,7 +11,7 @@ class Mp3Locator:
 			result = os.listdir( root )
 			result.sort()
 		except OSError:
-			print( "Could not find the directory for media" )
+			print( "Could not find the directory for media: %s" % root )
 		return result
 
 	def updateRoot( self, newRoot ):
@@ -31,12 +31,18 @@ class Mp3Locator:
 
 		# For each file check if they are a dir, if so then add all sub dirs to the result set
 		for file in rootFiles:
-			tmpPath = "%s/%s" % (newRoot, file)
+			tmpPath = "%s%s" % (newRoot, file)
 			if tmpPath[0] != "." and os.path.isdir( tmpPath ):
-				dirs = dirs + self.listSubDirs(tmpPath)
+				innerFiles = self.listSubDirs(tmpPath)
+				for innerFile in innerFiles:
+					tmpInnerPath = "%s/%s" % (tmpPath, innerFile)
+					if tmpInnerPath[0] != "." and os.path.isdir( tmpInnerPath ):
+						innerDirs = self.listSubDirs(tmpInnerPath)
+						for innerD in innerDirs:
+							dirs += [("%s/%s/" % ( tmpInnerPath, innerD ))]
 
 		# Format results
-		dirs = [newRoot] + ["%s%s/"%(newRoot, i) for i in dirs]
+		dirs = [newRoot] + dirs
 
 
 		if len(dirs) > 0:
@@ -60,12 +66,3 @@ class Mp3Locator:
 	def listDirs(self):
 		return self.dirs
 
-
-test = Mp3Locator()
-print test.updateRoot( "/" )
-print test.next()
-print test.next()
-print test.next()
-print test.next()
-print test.next()
-print test.next()

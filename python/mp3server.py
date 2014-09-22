@@ -7,6 +7,7 @@ import os
 import sys
 import json
 from subprocess import *
+from mp3locator import *
 
 MOUNT_DIRECTORY = "/media/"
 PORT = 8080
@@ -27,45 +28,14 @@ if len( sys.argv ) > 2:
 def exeC( cmd, prams="" ):
   os.system( "%s %s" % ( cmd, prams ) )
 
-# Mp3 player commands
-def startSServer():
-  print( "Starting server" )
-  exeC( "mocp", "-x" )
-  exeC( "mocp", "-S" )
+locator = Mp3Locator()
+locator.updateRoot( MOUNT_DIRECTORY )
 
-def play():
-  print( "play" );
-  exeC( "mocp", "-p -a %s" % MOUNT_DIRECTORY )
-
-def pause():
-  print "pause"
-  exeC( "mocp", "--toggle-pause" )
-
-def stop():
-  print "stop"
-  exeC( "mocp", "-c -s" )
-  play.isPlaying = False
-
-def next():
-  print "next track"
-  exeC( "mocp", "--next" )
-
-def prev():
-  print "prev track"
-  exeC( "mocp", "--prev" )
-
-def shuffle():
-  print "toggle shuffle"
-  exeC( "mocp", "--toggle shuffle" )
-
-def reboot():
-  # Disable reboot button on default port
-  if( PORT != 8080 ):
-    exeC( "reboot" )
 
 class Mp3Handler(SimpleHTTPServer.SimpleHTTPRequestHandler):
 
     serverStarted = False
+		# Server methods
     def getPostData(self):
       result = {}
       form = cgi.FieldStorage(
@@ -101,43 +71,83 @@ class Mp3Handler(SimpleHTTPServer.SimpleHTTPRequestHandler):
       output["ip"] = raw
       return output
 
+		# Mp3 player commands
+    def startSServer(self):
+      print( "Starting server" )
+      exeC( "mocp", "-x" )
+      exeC( "mocp", "-S" )
+
+    def play(self):
+      self.stop()
+      print( "playing from: %s" % locator.current() );
+      exeC( "mocp", "-p -a '%s'" % locator.current() )
+
+    def pause(self):
+      print "pause"
+      exeC( "mocp", "--toggle-pause" )
+
+    def stop(self):
+      print "stop"
+      exeC( "mocp", "-c -s" )
+
+    def next(self):
+      print "next track"
+      exeC( "mocp", "--next" )
+
+    def prev(self):
+      print "prev track"
+      exeC( "mocp", "--prev" )
+
+    def next_album(self):
+      print "next album"
+      self.stop()
+      return locator.next()
+
+    def prev_album(self):
+      print "next album"
+      self.stop()
+      return locator.prev()
+    
+    def info(self):
+      return self.getCommandOutput( ["mocp", "-i"])
+
+    def ip(self):
+      return self.getCommandOutput( ["ifconfig"])
+
+    def refresh_data(self):
+      self.stop()
+      locator.updateRoot( MOUNT_DIRECTORY )
+      print "Dirs loaded...", locator.listDirs() 
+      return locator.listDirs()
+
+    def shuffle(self):
+      print "toggle shuffle"
+      exeC( "mocp", "--toggle shuffle" )
+    def reboot(self):
+      # Disable reboot button on default port
+      if( PORT != 8080 ):
+        exeC( "reboot" )
+
     def do_POST(self):
       try:
-        response = "Invalid command"
+        response = { "message": "Invalid command", "output":"" }
 
         # Start the sound server if it has not already been attempted to be started
         if not Mp3Handler.serverStarted:
-          startSServer()
+          self.startSServer()
           Mp3Handler.serverStarted = True
 
         # Handle the command from the web client
         post = self.getPostData()
         if "action" in post:
           action = post["action"]
-          response = "Command '%s' executed" % action
-          if action == "play":
-            play()
-          elif action == "stop":
-            stop()
-          elif action == "pause":
-            pause()
-          elif action == "next":
-            next()
-          elif action == "prev":
-            prev()
-          elif action == "shuffle":
-            shuffle()
-          elif action == "reboot":
-            reboot()
-          elif action == "info":
-            response = json.dumps(self.getCommandOutput( ["mocp", "-i"]))
-          elif action == "ip":
-            response = json.dumps(self.getCommandOutput( ["ifconfig"]))
+          if hasattr(self, action):
+            response["output"] = getattr(self, action)()
+            response["message"] = "Command '%s' executed" % action
           else:
-            response = "Command '%s' not found" % action
-
+            response["message"] = "Command '%s' not found" % action
           
-        self.wfile.write(response)
+        self.wfile.write(json.dumps( response ) )
       except:
         print( "Error in post handler for mp3 server!" )
 
