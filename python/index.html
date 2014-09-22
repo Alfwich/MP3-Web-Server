@@ -8,37 +8,38 @@
 <body>
 <script type="text/javascript">
 var URL = "index.html";
-var playerAction = function(action) {
+var defaultPlayerActionCallback = function(data) {
+		console.log( data );
+}
+
+var playerAction = function(action, callback) {
+	if( typeof callback === "undefined" ) {
+		callback = defaultPlayerActionCallback;
+	}
+
 	$.ajax({
 		type: "POST",
 		url: URL,
 		data: { action: action }
-	})
-		.done(function( data ) {
-      if( action == "info" || action == "ip" ) {
-        renderInfo(data);
-      } else {
-        console.log( data );
-      }
+	}).done(callback);
+}
+
+var renderPlayerAction = function(action) {
+	playerAction(action, function(info) {
+		info = jQuery.parseJSON( info );
+		var table = $("<table>");
+		for( i in info ) {
+			var row = $("<tr>")
+
+			var label = $("<td>", { text:i } );
+			var data = $("<td>", {text:info[i]} );
+
+			table.append( row.append( data ) );
+		}
+
+		$("#info").empty().append( table );
 	});
 }
-
-var renderInfo = function(info) {
-  info = jQuery.parseJSON( info );
-  var table = $("<table>");
-  for( i in info ) {
-    var row = $("<tr>")
-
-    var label = $("<td>", { text:i } );
-    var data = $("<td>", {text:info[i]} );
-
-    table.append( row.append( data ) );
-  }
-
-  $("#info").empty().append( table );
-}
-
-//setTimeout( function(){ playerAction('info'); }, 1000 );
 
 </script>
 <div id="controls">
@@ -47,10 +48,10 @@ var renderInfo = function(info) {
 	<button class="prev" onClick="playerAction('prev');">Prev</button>
 	<button class="next" onClick="playerAction('next');">Next</button>
 	<button class="shuffle" onClick="playerAction('shuffle');">Shuffle</button>
-	<button class="stop" onClick="playerAction('stop');">Stop</button>
+	<!-- <button class="stop" onClick="playerAction('stop');">Stop</button> -->
 	<hr class="control">
-	<button class="ip danger" onClick="playerAction('ip');">Display IP Info</button>		
-	<button class="info danger" onClick="playerAction('info');">Display Info</button>		
+	<!-- <button class="ip danger" onClick="renderPlayerAction('ip');">Display IP Info</button>		-->
+	<!-- <button class="info danger" onClick="renderPlayerAction('info');">Display Info</button>	-->
 	<button class="reboot danger" onClick="playerAction('reboot');">Restart Server</button>
 </div>
 <div id="info">
