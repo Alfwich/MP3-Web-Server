@@ -53,19 +53,15 @@ class Mp3Handler(SimpleHTTPServer.SimpleHTTPRequestHandler):
       return result
 
     def getCommandOutput(self, command):
-      output = {}
+      result = []
 
       # Get the information from the mocp process
       raw = Popen(command, stdout=PIPE).communicate()[0]
 
       # Format the string into a understandable format
-      raw = raw.split("\n")[0:-1] # Remove the last element
+      result = raw.split("\n")[0:-1]
 
-      # Pack the information into a dict and return that
-      for i in range(0, len(raw) ):
-        output[i] = raw[i]
-
-      return output
+      return result
       
       
     def getIPInfo(self):
@@ -118,6 +114,9 @@ class Mp3Handler(SimpleHTTPServer.SimpleHTTPRequestHandler):
       except: print "Could not get MOCP information!"
         
       return result
+      
+    def info_dirs(self):
+      return locator.listDirs()
 
     def ip(self):
       return self.getCommandOutput( ["ifconfig"])
@@ -156,9 +155,10 @@ class Mp3Handler(SimpleHTTPServer.SimpleHTTPRequestHandler):
           else:
             response["message"] = "Command '%s' not found" % action
           
-        self.wfile.write(json.dumps( response ) )
+        self.wfile.write( json.dumps( response ) )
       except:
         print( "Error in post handler for mp3 server!" )
+        self.wfile.write( "[]" )        
 
 def start_server():
     server_address = ("", PORT)
