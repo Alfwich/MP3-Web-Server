@@ -26,7 +26,10 @@ if len( sys.argv ) > 2:
 	MOUNT_DIRECTORY = sys.argv[2]
 
 def exeC( cmd, prams="" ):
-  os.system( "%s %s" % ( cmd, prams ) )
+  try:
+    os.system( "%s %s" % ( cmd, prams ) )
+  except:
+    print "Could not execute command: %s, with prams: %s" % ( cmd, prams )
 
 locator = Mp3Locator()
 locator.updateRoot( MOUNT_DIRECTORY )
@@ -109,7 +112,12 @@ class Mp3Handler(SimpleHTTPServer.SimpleHTTPRequestHandler):
       return locator.prev()
     
     def info(self):
-      return self.getCommandOutput( ["mocp", "-i"])
+      result = []
+      
+      try: result = self.getCommandOutput( ["mocp", "-i"])
+      except: print "Could not get MOCP information!"
+        
+      return result
 
     def ip(self):
       return self.getCommandOutput( ["ifconfig"])
@@ -123,6 +131,7 @@ class Mp3Handler(SimpleHTTPServer.SimpleHTTPRequestHandler):
     def shuffle(self):
       print "toggle shuffle"
       exeC( "mocp", "--toggle shuffle" )
+      
     def reboot(self):
       # Disable reboot button on default port
       if( PORT != 8080 ):

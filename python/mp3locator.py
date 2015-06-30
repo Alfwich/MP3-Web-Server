@@ -3,68 +3,56 @@ import sys
 import glob
 
 class Mp3Locator:
-	currentDir = 0
-	dirs = []
-	def listSubDirs( self, root ):
-		result = []
-		try:
-			result = os.listdir( root )
-			result.sort()
-		except OSError:
-			print( "Could not find the directory for media: %s" % root )
-		return result
+  dirs = []
+  
+  def listSubDirs( self, root ):
+    result = []
+    try:
+      result = os.listdir( root )
+      result.sort()
+    except OSError:
+      print( "Could not find the directory for media: %s" % root )
+    return result
 
-	def updateRoot( self, newRoot ):
+  def updateRoot( self, newRoot ):
 
-		if newRoot == None or len(newRoot) == 0:
-			print "Invalid new root"
-			return
+    if newRoot is None or len(newRoot) == 0:
+      print "Invalid new root"
+      return
 
-		# Minor processing if root is not in standard
-		if newRoot[-1] != "/":
-			newRoot = "%s/" % newRoot
+    # Minor processing if root is not in standard
+    if newRoot[-1] != "/":
+      newRoot = "%s/" % newRoot
 
-		dirs = []
+    self.dirs = []
 
-		# Get root level files
-		rootFiles = self.listSubDirs( newRoot )
+    # Find all of the sub-directories within the root and add the child folders to the dir list
+    # We do this because we are expecting the root folder to be the mount directory for media devices
+    # and want to support play-lists through folder structure
+    for file in map( lambda x: "%s%s"%(newRoot,x), self.listSubDirs( newRoot )):
+    
+      # Find the folders in the media device and index each play-list
+      if os.path.isdir(file):
+        for innerFile in map( lambda x: "%s/%s"%(file,x), self.listSubDirs(file)):
+          if os.path.isdir( innerFile ):
+            self.dirs.append( innerFile )
 
-		# For each file check if they are a dir, if so then add all sub dirs to the result set
-		"""
-		for file in rootFiles:
-			tmpPath = "%s%s" % (newRoot, file)
-			if tmpPath[0] != "." and os.path.isdir( tmpPath ):
-				innerFiles = self.listSubDirs(tmpPath)
-				for innerFile in innerFiles:
-					tmpInnerPath = "%s/%s" % (tmpPath, innerFile)
-					if tmpInnerPath[0] != "." and os.path.isdir( tmpInnerPath ):
-						innerDirs = self.listSubDirs(tmpInnerPath)
-						for innerD in innerDirs:
-							dirs += [("%s/%s/" % ( tmpInnerPath, innerD ))]
-		"""
+    return self.current()
 
-		# Format results
-		dirs = [newRoot]
+  def next( self ):
+    if len(self.dirs):
+      self.dirs.append(self.dirs.pop(0))
+    return self.current()
 
-
-		if len(dirs) > 0:
-			self.dirs = dirs
-			self.currentDir = 0
-
-		return self.current()
-
-	def next( self ):
-		self.currentDir = (self.currentDir+1)%len(self.dirs)
-		return self.current()
-
-	def prev( self ):
-		self.currentDir = (self.currentDir-1)%len(self.dirs)
-		return self.current()
-	
-	def current( self ):
-		if len(self.dirs) > 0:
-			return self.dirs[self.currentDir]
-	
-	def listDirs(self):
-		return self.dirs
+  def prev( self ):
+    if len(self.dirs):
+      self.dirs.insert(0,self.dirs.pop())
+    return self.current()
+  
+  def current( self ):
+    if len(self.dirs) > 0:
+      return self.dirs[0]
+  
+  def listDirs(self):
+    return self.dirs
 
