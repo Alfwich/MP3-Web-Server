@@ -16,26 +16,20 @@ class Mp3Locator:
 
   def updateRoot( self, newRoot ):
 
-    if newRoot is None or len(newRoot) == 0:
-      print "Invalid new root"
-      return
+    if len(newRoot):
 
-    # Minor processing if root is not in standard
-    if newRoot[-1] != "/":
-      newRoot = "%s/" % newRoot
+      self.dirs = []
 
-    self.dirs = []
-
-    # Find all of the sub-directories within the root and add the child folders to the dir list
-    # We do this because we are expecting the root folder to be the mount directory for media devices
-    # and want to support play-lists through folder structure
-    for file in map( lambda x: "%s%s"%(newRoot,x), self.listSubDirs( newRoot )):
-    
-      # Find the folders in the media device and index each play-list
-      if os.path.isdir(file):
-        for innerFile in map( lambda x: "%s/%s"%(file,x), self.listSubDirs(file)):
-          if os.path.isdir( innerFile ):
-            self.dirs.append( innerFile )
+      # Find all of the sub-directories within the root and add the child folders to the dir list
+      # We do this because we are expecting the root folder to be the mount directory for media devices
+      # and want to support play-lists through folder structure
+      for file in map( lambda x: "%s/%s"%(newRoot,x), self.listSubDirs( newRoot )):
+      
+        # Find the folders in the media device and index each play-list
+        if os.path.isdir(file):
+          for innerFile in map( lambda x: "%s/%s"%(file,x), self.listSubDirs(file)):
+            if os.path.isdir( innerFile ):
+              self.dirs.append( innerFile )
 
     return self.current()
 
