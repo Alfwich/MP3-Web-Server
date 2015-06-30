@@ -30,6 +30,7 @@ class Mp3Locator:
 		rootFiles = self.listSubDirs( newRoot )
 
 		# For each file check if they are a dir, if so then add all sub dirs to the result set
+		"""
 		for file in rootFiles:
 			tmpPath = "%s%s" % (newRoot, file)
 			if tmpPath[0] != "." and os.path.isdir( tmpPath ):
@@ -40,9 +41,10 @@ class Mp3Locator:
 						innerDirs = self.listSubDirs(tmpInnerPath)
 						for innerD in innerDirs:
 							dirs += [("%s/%s/" % ( tmpInnerPath, innerD ))]
+		"""
 
 		# Format results
-		dirs = [newRoot] + dirs
+		dirs = [newRoot]
 
 
 		if len(dirs) > 0:
