@@ -48,5 +48,5 @@ class Mp3Locator:
       return self.dirs[0]
   
   def listDirs(self):
-    return self.dirs
+    return sorted(self.dirs)
 

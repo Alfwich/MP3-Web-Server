@@ -1,11 +1,4 @@
-import threading
-import webbrowser
-import cgi
-import BaseHTTPServer
-import SimpleHTTPServer
-import os
-import sys
-import json
+import threading, webbrowser, cgi, BaseHTTPServer, SimpleHTTPServer, os, sys, json
 from subprocess import *
 from mp3locator import *
 
@@ -71,7 +64,7 @@ class Mp3Handler(SimpleHTTPServer.SimpleHTTPRequestHandler):
       return output
 
 		# Mp3 player commands
-    def startSServer(self):
+    def startSoundServer(self):
       print( "Starting server" )
       exeC( "mocp", "-x" )
       exeC( "mocp", "-S" )
@@ -115,11 +108,11 @@ class Mp3Handler(SimpleHTTPServer.SimpleHTTPRequestHandler):
         
       return result
       
-    def info_dirs(self):
-      return locator.listDirs()
+    def info_playlists(self):
+      return { "lists" : locator.listDirs(), "current" : locator.current() }
 
     def ip(self):
-      return self.getCommandOutput( ["ifconfig"])
+      return self.getCommandOutput(["ifconfig"])
 
     def refresh_data(self):
       self.stop()
@@ -130,11 +123,6 @@ class Mp3Handler(SimpleHTTPServer.SimpleHTTPRequestHandler):
     def shuffle(self):
       print "toggle shuffle"
       exeC( "mocp", "--toggle shuffle" )
-      
-    def reboot(self):
-      # Disable reboot button on default port
-      if( PORT != 8080 ):
-        exeC( "reboot" )
 
     def do_POST(self):
       try:
@@ -142,7 +130,7 @@ class Mp3Handler(SimpleHTTPServer.SimpleHTTPRequestHandler):
 
         # Start the sound server if it has not already been attempted to be started
         if not Mp3Handler.serverStarted:
-          self.startSServer()
+          self.startSoundServer()
           Mp3Handler.serverStarted = True
 
         # Handle the command from the web client
@@ -156,8 +144,8 @@ class Mp3Handler(SimpleHTTPServer.SimpleHTTPRequestHandler):
             response["message"] = "Command '%s' not found" % action
           
         self.wfile.write( json.dumps( response ) )
-      except:
-        print( "Error in post handler for mp3 server!" )
+      except Exception as e:
+        print( "Error in post handler for mp3 server:\n %s" % e )
         self.wfile.write( "[]" )        
 
 def start_server():
@@ -166,7 +154,7 @@ def start_server():
     server.serve_forever()
 
 if __name__ == "__main__":
-    print( "Started moc server and web server on port: %s, reading music recursivly from directory: %s" % ( PORT, MOUNT_DIRECTORY ) )
+    print( "Started moc server and web server on port: %s, reading music recursively from directory: %s" % ( PORT, MOUNT_DIRECTORY ) )
     start_server()
 
 
