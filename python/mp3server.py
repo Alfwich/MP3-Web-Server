@@ -110,12 +110,13 @@ class Mp3Handler(SimpleHTTPServer.SimpleHTTPRequestHandler):
       for entry in map( lambda x: x.split(": "), raw ):
         if len(entry) == 2:
           result[entry[0].lower()] = entry[1]
+
+    
+      result["lists"] = locator.listDirs()
+      result["currentList"] = locator.current()
         
       return result
       
-    def info_playlists(self):
-      return { "lists" : locator.listDirs(), "current" : locator.current() }
-
     def ip(self):
       return self.getCommandOutput(["ifconfig"])
 
@@ -128,6 +129,13 @@ class Mp3Handler(SimpleHTTPServer.SimpleHTTPRequestHandler):
     def shuffle(self):
       print "toggle shuffle"
       exeC( "mocp", "--toggle shuffle" )
+
+    def end_headers(self):
+      self.defaultHeaders()
+      SimpleHTTPServer.SimpleHTTPRequestHandler.end_headers(self)
+
+    def defaultHeaders(self):
+      self.send_header( "Access-Control-Allow-Origin", "*" )
 
     def do_POST(self):
       try:
@@ -149,13 +157,13 @@ class Mp3Handler(SimpleHTTPServer.SimpleHTTPRequestHandler):
             response["message"] = "Command '%s' not found" % action
 
         responseData = json.dumps( response );
-        
-        self.send_header( "Content-Type", "application/json; charset=utf-8" )
-        self.send_header( "Content-Length", str(len(responseData)))
-        self.send_header( "Proxy-Connection", "Keep-Alive" )
-        self.send_header( "Connection", "Keep-Alive" )
-        self.send_header( "Access-Control-Allow-Origin", "localhost" )
-        self.wfile.write( json.dumps( response ) )
+
+        # Process response and headers
+        self.send_response(200)
+        self.send_header( "Content-Type", "application/json" )
+        self.send_header( "Content-Size", str(len(responseData)) )
+        self.end_headers()
+        self.wfile.write( responseData )
       except Exception as e:
         print( "Error in post handler for mp3 server:\n %s" % e )
         self.wfile.write( "[]" )        
