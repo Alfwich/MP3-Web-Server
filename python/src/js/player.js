@@ -2,7 +2,7 @@ app.controller('main', function($scope) {
 
   $scope.playLists = [];
   $scope.currentPlaylist = "";
-  $scope.currentSongName = "";
+  $scope.currentState = {};
   $scope.requests = [];
   $scope.isShuffled = false;
   $scope.isPlaying = false;
@@ -38,7 +38,7 @@ app.controller('main', function($scope) {
       type: "POST",
       url: "index.html",
       data: { action: action },
-      timeout: 1500
+      timeout: 5000
     })
     .done(callback)
     .always(function(data){
@@ -54,11 +54,11 @@ app.controller('main', function($scope) {
   };
   
   $scope.syncPlayer = function(){
-    console.log( "Sync!" );
     $scope.playerAction( "info", function(data){
       data = JSON.parse( data );
       if( data && data["output"] ) {
-        $scope.currentSongName = data["output"]["songtitle"];
+        setTimeout( $scope.syncPlayer, 2000 );
+        $scope.currentState = data["output"];
         $scope.$apply();
       }
     });
@@ -77,6 +77,6 @@ app.controller('main', function($scope) {
   
   $scope.updatePlaylist();
   $scope.syncPlayer();
-  setInterval( $scope.syncPlayer, 2000 );
+  setTimeout( $scope.syncPlayer, 2000 );
 
 });

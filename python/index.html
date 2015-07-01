@@ -20,12 +20,13 @@
 <body ng-app="mp3-player" ng-controller="main">
   <div class="row">
     <div class="col-xs-5"id="controls">
-      <button class="btn btn-default" ng-click="playerAction('play')" ng-disabled="requests.length">
-        Play
+      <button class="btn btn-default" ng-value="(currentState=='paused')?'Play':'Pause'"ng-click="playerAction('play')" ng-disabled="requests.length">
       </button>
+      <!--
       <button class="btn btn-default" ng-click="playerAction('pause')" ng-disabled="requests.length">
         Pause
       </button>
+      -->
       <button class="btn btn-default" ng-click="playerAction('next')" ng-disabled="requests.length">
         Next
       </button>    
@@ -55,7 +56,7 @@
     </div>
   </div>
   <div id="play-bar"> 
-    <div class="song-name" ng-bind="currentSongName"></div>
+    <div class="song-name" ng-bind="currentState.songtitle"></div>
   </div>
 </body>
 </html>
