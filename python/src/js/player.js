@@ -44,7 +44,7 @@ app.controller('main', function($scope) {
         
     var request = $.ajax({
       type: "POST",
-      url: "index.html",
+      url: "http://10.0.150.100:3000/index.html",
       data: { action: action },
       timeout: 5000
     })

@@ -147,7 +147,8 @@ class Mp3Handler(SimpleHTTPServer.SimpleHTTPRequestHandler):
             response["message"] = "Command '%s' executed" % action
           else:
             response["message"] = "Command '%s' not found" % action
-          
+        
+        self.send_header( "Access-Control-Allow-Origin", "http://localhost*" )
         self.wfile.write( json.dumps( response ) )
       except Exception as e:
         print( "Error in post handler for mp3 server:\n %s" % e )
