@@ -66,7 +66,7 @@ app.controller('main', function($scope) {
     $scope.playerAction( "info", function(data){
       data = JSON.parse( data );
       if( data && data["output"] ) {
-        setTimeout( $scope.syncPlayer, 2000 );
+        //setTimeout( $scope.syncPlayer, 2000 );
         $scope.currentState = data["output"];
         $scope.$apply();
       }
