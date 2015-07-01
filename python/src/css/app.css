@@ -35,6 +35,7 @@ body {
 
 #play-bar {
   width: 100%;
+  position: relative;
   background-color: #575757;
   text-align: center;
   height: 20px;
@@ -45,13 +46,13 @@ body {
   background-color: #0A0;
 }
 
-#play-bar > .song-name {
+.song-name {
   width: 100%;
   z-index: 10;
   color: #FFF;
 }
 
-#play-bar > .progress-bar {
+.progress-bar {
   position: absolute;
   z-index: 5;
   top:0px;
