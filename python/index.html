@@ -46,7 +46,8 @@
       </button>     
       <button class="btn btn-danger" ng-click="buttonPlayerAction('info')">
         Info 
-      </button>     
+      </button>
+      <input type="text" ng-model="requestUrl"></input>
     </div>
     <div class="col-xs-7">
       <div class="playlist-tile" ng-repeat="list in playLists" ng-class="{ selected: list==currentPlaylist}">
