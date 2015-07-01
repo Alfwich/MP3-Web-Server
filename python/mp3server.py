@@ -147,8 +147,14 @@ class Mp3Handler(SimpleHTTPServer.SimpleHTTPRequestHandler):
             response["message"] = "Command '%s' executed" % action
           else:
             response["message"] = "Command '%s' not found" % action
+
+        responseData = json.dumps( response );
         
-        self.send_header( "Access-Control-Allow-Origin", "http://localhost*" )
+        self.send_header( "Content-Type", "application/json; charset=utf-8" )
+        self.send_header( "Content-Length", str(len(responseData)))
+        self.send_header( "Proxy-Connection", "Keep-Alive" )
+        self.send_header( "Connection", "Keep-Alive" )
+        self.send_header( "Access-Control-Allow-Origin", "localhost" )
         self.wfile.write( json.dumps( response ) )
       except Exception as e:
         print( "Error in post handler for mp3 server:\n %s" % e )
