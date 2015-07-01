@@ -27,13 +27,21 @@ app.controller('main', function($scope) {
     }
 
   }
+  
+  // Wrapper for button clicks to disable actions 
+  // until all of the requests are resolved
+  $scope.buttonPlayerAction = function( action, callback ) {
+    if( !$scope.requests.length ) {
+      $scope.playerAction( action, callback )
+    }
+  }
    
   // Perform a network action with the server
   $scope.playerAction = function( action, callback) {
     if( typeof callback === "undefined" ) {
       callback = function(d){ console.log(d); };
     }
-    
+        
     var request = $.ajax({
       type: "POST",
       url: "index.html",

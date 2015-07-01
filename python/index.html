@@ -20,32 +20,31 @@
 <body ng-app="mp3-player" ng-controller="main">
   <div class="row">
     <div class="col-xs-5"id="controls">
-      <button class="btn btn-default" ng-value="(currentState=='paused')?'Play':'Pause'"ng-click="playerAction('play')" ng-disabled="requests.length">
+      <button class="btn btn-default" ng-click="buttonPlayerAction('play')">
+        Play
       </button>
-      <!--
-      <button class="btn btn-default" ng-click="playerAction('pause')" ng-disabled="requests.length">
+      <button class="btn btn-default" ng-click="buttonPlayerAction('pause')">
         Pause
       </button>
-      -->
-      <button class="btn btn-default" ng-click="playerAction('next')" ng-disabled="requests.length">
+      <button class="btn btn-default" ng-click="buttonPlayerAction('next')">
         Next
       </button>    
-      <button class="btn btn-default" ng-click="playerAction('prev')" ng-disabled="requests.length">
+      <button class="btn btn-default" ng-click="buttonPlayerAction('prev')">
         Prev
       </button>
-      <button class="btn btn-default" ng-click="playerAction('next_album')" ng-disabled="requests.length">
+      <button class="btn btn-default" ng-click="buttonPlayerAction('next_album')">
         Next Album
       </button>
-      <button class="btn btn-default" ng-click="playerAction('prev_album')" ng-disabled="requests.length">
+      <button class="btn btn-default" ng-click="buttonPlayerAction('prev_album')">
         Prev Album
       </button>
-      <button class="btn btn-default" ng-click="playerAction('refresh_data')" ng-disabled="requests.length">
+      <button class="btn btn-default" ng-click="buttonPlayerAction('refresh_data')">
         Refresh
       </button>
-      <button class="btn btn-default" ng-click="playerAction('shuffle')" ng-disabled="requests.length">
+      <button class="btn btn-default" ng-click="buttonPlayerAction('shuffle')">
         Shuffle
       </button>     
-      <button class="btn btn-danger" ng-click="playerAction('info')" ng-disabled="requests.length">
+      <button class="btn btn-danger" ng-click="buttonPlayerAction('info')">
         Info 
       </button>     
     </div>
