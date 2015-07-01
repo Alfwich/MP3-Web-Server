@@ -4,25 +4,46 @@ app.controller('main', function($scope) {
   $scope.requests = [];
   $scope.isShuffled = false;
   $scope.isPlaying = false;
-  $scope.requestUrl = "index.html";
+  $scope.requestUrl = "http://10.0.150.100:3000";
 
   $scope.callbacks = {
     "next_album" : function(data) {
-      if( data && data["output"] ) {
-        $scope.currentPlaylist = data["output"];
-      }
+      $scope.syncPlayer();    
     },
     
     "prev_album" : function(data) {
-      if( data && data["output"] ) {
-        $scope.currentPlaylist = data["output"];
-      }
+      $scope.syncPlayer();    
     },
 
     "refresh_data" : function() {
       $scope.syncPlayer();
     }
 
+  }
+  
+  $scope.processTime = function(t) {
+    var result = null;
+    
+    if( t && typeof t === "string" ) {
+      var comps = t.split(":");
+      if( comps.length == 2 ) {
+        result = parseInt(comps[0])*60 + parseInt(comps[1]);
+      }
+    }
+  
+    return result;
+  }
+  
+  $scope.computeDuration = function() {
+    var currentTime = $scope.processTime( $scope.currentState.currenttime ),
+        totalTime = $scope.processTime( $scope.currentState.totaltime ),
+        result = 0;
+    
+    if( currentTime !== null && totalTime !== null ) {
+      result = currentTime / totalTime * 100;
+    }
+    
+    return result + "%";
   }
   
   // Wrapper for button clicks to disable actions 
@@ -61,7 +82,6 @@ app.controller('main', function($scope) {
   $scope.syncPlayer = function(){
     $scope.playerAction( "info", function(data){
       if( data && data["output"] ) {
-        //setTimeout( $scope.syncPlayer, 2000 );
         $scope.currentState = data["output"];
         $scope.$apply();
       }
@@ -69,6 +89,6 @@ app.controller('main', function($scope) {
   };
     
   $scope.syncPlayer();
-  setTimeout( $scope.syncPlayer, 2000 );
+  setInterval( $scope.syncPlayer, 2000 );
 
 });

@@ -58,7 +58,8 @@
       </div>
     </div>
   </div>
-  <div id="play-bar"> 
+  <div id="play-bar" ng-class="{ playing: currentState.state == 'PLAY'}"> 
+    <div class="progress-bar" ng-style="{ width:computeDuration() }"></div>
     <div class="song-name" ng-bind="currentState.songtitle"></div>
   </div>
 </body>

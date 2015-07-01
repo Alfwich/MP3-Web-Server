@@ -32,3 +32,36 @@ body {
 .playlist-tile.selected {
   background-color: #006100;
 }
+
+#play-bar {
+  position: fixed;
+  bottom: 0px;
+  left: 0px;
+  width: 100%;
+  background-color: #575757;
+  text-align: center;
+  height: 20px;
+}
+
+#play-bar.playing {
+  background-color: #0A0;
+}
+
+#play-bar > .song-name {
+  position: fixed;
+  width: 100%;
+  z-index: 10;
+  color: #FFF;
+}
+
+#play-bar > .progress-bar {
+  position: absolute;
+  z-index: 5;
+  top:0px;
+  left: 0px;
+  background-color: #A00;
+  transition: width 2s;
+  -webkit-transition: width 2s;
+  -webkit-transition-timing-function: linear;
+  transition-timing-function: linear;  
+}
