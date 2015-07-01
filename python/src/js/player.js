@@ -1,7 +1,5 @@
 app.controller('main', function($scope) {
 
-  $scope.playLists = [];
-  $scope.currentPlaylist = "";
   $scope.currentState = {};
   $scope.requests = [];
   $scope.isShuffled = false;
@@ -10,21 +8,19 @@ app.controller('main', function($scope) {
 
   $scope.callbacks = {
     "next_album" : function(data) {
-      data = JSON.parse( data );
       if( data && data["output"] ) {
         $scope.currentPlaylist = data["output"];
       }
     },
     
     "prev_album" : function(data) {
-      data = JSON.parse( data );
       if( data && data["output"] ) {
         $scope.currentPlaylist = data["output"];
       }
     },
 
     "refresh_data" : function() {
-      $scope.updatePlaylist();
+      $scope.syncPlayer();
     }
 
   }
@@ -64,27 +60,14 @@ app.controller('main', function($scope) {
   
   $scope.syncPlayer = function(){
     $scope.playerAction( "info", function(data){
-      data = JSON.parse( data );
       if( data && data["output"] ) {
         //setTimeout( $scope.syncPlayer, 2000 );
         $scope.currentState = data["output"];
         $scope.$apply();
       }
-    });
+    });   
   };
-  
-  $scope.updatePlaylist = function(){
-    $scope.playerAction( "info_playlists", function(data){
-      data = JSON.parse( data );
-      if( data && data["output"] ) {
-        $scope.playLists = data["output"]["lists"];
-        $scope.currentPlaylist = data["output"]["current"];
-        $scope.$apply();
-      }
-    });
-  };
-  
-  $scope.updatePlaylist();
+    
   $scope.syncPlayer();
   setTimeout( $scope.syncPlayer, 2000 );
 
