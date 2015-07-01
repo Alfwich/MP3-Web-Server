@@ -2,9 +2,7 @@ app.controller('main', function($scope) {
 
   $scope.currentState = {};
   $scope.requests = [];
-  $scope.isShuffled = false;
-  $scope.isPlaying = false;
-  $scope.requestUrl = "http://10.0.150.100:3000";
+  $scope.requestUrl = "index.html";
 
   $scope.callbacks = {
     "next_album" : function(data) {
