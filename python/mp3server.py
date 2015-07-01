@@ -109,7 +109,7 @@ class Mp3Handler(SimpleHTTPServer.SimpleHTTPRequestHandler):
 
       for entry in map( lambda x: x.split(": "), raw ):
         if len(entry) == 2:
-          result[entry[0]] = entry[1]
+          result[entry[0].lower()] = entry[1]
         
       return result
       

@@ -18,42 +18,44 @@
   <script type="text/javascript" src="src/js/player.js"></script>
 </head>
 <body ng-app="mp3-player" ng-controller="main">
-<div class="row">
-  <div class="col-xs-5"id="controls">
-    <button class="btn btn-default" ng-click="playerAction('play')" ng-disabled="requests.length">
-      Play
-    </button>
-    <button class="btn btn-default" ng-click="playerAction('pause')" ng-disabled="requests.length">
-      Pause
-    </button>
-    <button class="btn btn-default" ng-click="playerAction('next')" ng-disabled="requests.length">
-      Next
-    </button>    
-    <button class="btn btn-default" ng-click="playerAction('prev')" ng-disabled="requests.length">
-      Prev
-    </button>
-    <button class="btn btn-default" ng-click="playerAction('next_album')" ng-disabled="requests.length">
-      Next Album
-    </button>
-    <button class="btn btn-default" ng-click="playerAction('prev_album')" ng-disabled="requests.length">
-      Prev Album
-    </button>
-    <button class="btn btn-default" ng-click="playerAction('refresh_data')" ng-disabled="requests.length">
-      Refresh
-    </button>
-    <button class="btn btn-default" ng-click="playerAction('shuffle')" ng-disabled="requests.length">
-      Shuffle
-    </button>     
-    <button class="btn btn-danger" ng-click="playerAction('info')" ng-disabled="requests.length">
-      Info 
-    </button>     
-  </div>
-  <div class="col-xs-7">
-    <div class="playlist-tile" ng-repeat="list in playLists" ng-class="{ selected: list==current }">
-      {{list}}
+  <div class="row">
+    <div class="col-xs-5"id="controls">
+      <button class="btn btn-default" ng-click="playerAction('play')" ng-disabled="requests.length">
+        Play
+      </button>
+      <button class="btn btn-default" ng-click="playerAction('pause')" ng-disabled="requests.length">
+        Pause
+      </button>
+      <button class="btn btn-default" ng-click="playerAction('next')" ng-disabled="requests.length">
+        Next
+      </button>    
+      <button class="btn btn-default" ng-click="playerAction('prev')" ng-disabled="requests.length">
+        Prev
+      </button>
+      <button class="btn btn-default" ng-click="playerAction('next_album')" ng-disabled="requests.length">
+        Next Album
+      </button>
+      <button class="btn btn-default" ng-click="playerAction('prev_album')" ng-disabled="requests.length">
+        Prev Album
+      </button>
+      <button class="btn btn-default" ng-click="playerAction('refresh_data')" ng-disabled="requests.length">
+        Refresh
+      </button>
+      <button class="btn btn-default" ng-click="playerAction('shuffle')" ng-disabled="requests.length">
+        Shuffle
+      </button>     
+      <button class="btn btn-danger" ng-click="playerAction('info')" ng-disabled="requests.length">
+        Info 
+      </button>     
+    </div>
+    <div class="col-xs-7">
+      <div class="playlist-tile" ng-repeat="list in playLists" ng-class="{ selected: list==currentPlaylist}">
+        {{list}}
+      </div>
     </div>
   </div>
-</div>
-
+  <div id="play-bar"> 
+    <div class="song-name" ng-bind="currentSongName"></div>
+  </div>
 </body>
 </html>

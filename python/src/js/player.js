@@ -1,26 +1,32 @@
 app.controller('main', function($scope) {
 
+  $scope.playLists = [];
+  $scope.currentPlaylist = "";
+  $scope.currentSongName = "";
+  $scope.requests = [];
+  $scope.isShuffled = false;
+  $scope.isPlaying = false;
+
   $scope.callbacks = {
     "next_album" : function(data) {
       data = JSON.parse( data );
       if( data && data["output"] ) {
-        $scope.current = data["output"];
+        $scope.currentPlaylist = data["output"];
       }
     },
     
     "prev_album" : function(data) {
       data = JSON.parse( data );
       if( data && data["output"] ) {
-        $scope.current = data["output"];
+        $scope.currentPlaylist = data["output"];
       }
-    },    
+    },
+
+    "refresh_data" : function() {
+      $scope.updatePlaylist();
+    }
+
   }
-  
-  $scope.playLists = [];
-  $scope.current = "";
-  $scope.requests = [];
-  $scope.isShuffled = false;
-  $scope.isPlaying = false;
    
   // Perform a network action with the server
   $scope.playerAction = function( action, callback) {
@@ -31,7 +37,8 @@ app.controller('main', function($scope) {
     var request = $.ajax({
       type: "POST",
       url: "index.html",
-      data: { action: action }
+      data: { action: action },
+      timeout: 1500
     })
     .done(callback)
     .always(function(data){
@@ -47,10 +54,12 @@ app.controller('main', function($scope) {
   };
   
   $scope.syncPlayer = function(){
+    console.log( "Sync!" );
     $scope.playerAction( "info", function(data){
       data = JSON.parse( data );
       if( data && data["output"] ) {
-        console.log( data );
+        $scope.currentSongName = data["output"]["songtitle"];
+        $scope.$apply();
       }
     });
   };
@@ -60,7 +69,7 @@ app.controller('main', function($scope) {
       data = JSON.parse( data );
       if( data && data["output"] ) {
         $scope.playLists = data["output"]["lists"];
-        $scope.current = data["output"]["current"];
+        $scope.currentPlaylist = data["output"]["current"];
         $scope.$apply();
       }
     });
@@ -68,4 +77,6 @@ app.controller('main', function($scope) {
   
   $scope.updatePlaylist();
   $scope.syncPlayer();
+  setInterval( $scope.syncPlayer, 2000 );
+
 });
