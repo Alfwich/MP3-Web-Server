@@ -80,13 +80,12 @@ app.controller('main', function($scope) {
   $scope.syncPlayer = function(){
     $scope.playerAction( "info", function(data){
       if( data && data["output"] ) {
+        setTimeout( $scope.syncPlayer, 2000 );
         $scope.currentState = data["output"];
         $scope.$apply();
       }
     });   
   };
     
-  $scope.syncPlayer();
-  setInterval( $scope.syncPlayer, 2000 );
-
+  setTimeout( $scope.syncPlayer, 2000 );
 });
