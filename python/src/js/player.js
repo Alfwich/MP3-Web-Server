@@ -2,6 +2,7 @@ app.controller('main', function($scope) {
 
   $scope.currentState = {};
   $scope.requests = [];
+  $scope.syncHandle = null;
   $scope.requestUrl = "index.html";
 
   $scope.callbacks = {
@@ -80,12 +81,13 @@ app.controller('main', function($scope) {
   $scope.syncPlayer = function(){
     $scope.playerAction( "info", function(data){
       if( data && data["output"] ) {
-        setTimeout( $scope.syncPlayer, 2000 );
+        clearTimeout( $scope.syncHandle );
+        $scope.syncHandle = setTimeout( $scope.syncPlayer, 2000 );
         $scope.currentState = data["output"];
         $scope.$apply();
       }
     });   
   };
     
-  setTimeout( $scope.syncPlayer, 2000 );
+  $scope.syncPlayer();
 });
