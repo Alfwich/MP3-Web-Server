@@ -18,6 +18,12 @@
   <script type="text/javascript" src="src/js/player.js"></script>
 </head>
 <body ng-app="mp3-player" ng-controller="main">
+  <div id="play-bar" class="row" ng-class="{ playing: currentState.state == 'PLAY'}">
+    <div class="col-xs-12">
+      <div class="progress-bar" ng-style="{ width:computeDuration() }"></div>
+      <div class="song-name" ng-bind="currentState.songtitle"></div>
+    </div>
+  </div>
   <div class="row">
     <div class="col-xs-5"id="controls">
       <button class="btn btn-default" ng-click="buttonPlayerAction('play')">
@@ -59,10 +65,6 @@
         {{list}}
       </div>
     </div>
-  </div>
-  <div id="play-bar" ng-class="{ playing: currentState.state == 'PLAY'}"> 
-    <div class="progress-bar" ng-style="{ width:computeDuration() }"></div>
-    <div class="song-name" ng-bind="currentState.songtitle"></div>
   </div>
 </body>
 </html>
