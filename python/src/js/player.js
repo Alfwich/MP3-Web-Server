@@ -1,15 +1,5 @@
 app.controller('main', function($scope) {
-  $scope.actions = [
-    { command: "play", label: "Play"},
-    { command: "pause", label: "Pause"},
-    { command: "prev", label: "Prev"}, 
-    { command: "next", label: "Next"},
-    { command: "next_album", label: "Next Album"},
-    { command: "prev_album", label: "Prev Album"},    
-    { command: "refresh_data", label: "Refresh Data"},
-    { command: "shuffle", label: "Shuffle"}
-  ];
-  
+
   $scope.callbacks = {
     "next_album" : function(data) {
       data = JSON.parse( data );

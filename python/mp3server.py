@@ -101,10 +101,15 @@ class Mp3Handler(SimpleHTTPServer.SimpleHTTPRequestHandler):
       return locator.prev()
     
     def info(self):
-      result = []
+      result = {}
+      raw = []
       
-      try: result = self.getCommandOutput( ["mocp", "-i"])
+      try: raw = self.getCommandOutput( ["mocp", "-i"])
       except: print "Could not get MOCP information!"
+
+      for entry in map( lambda x: x.split(": "), raw ):
+        if len(entry) == 2:
+          result[entry[0]] = entry[1]
         
       return result
       
