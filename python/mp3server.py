@@ -18,6 +18,11 @@ if PORT == 8080:
 if len( sys.argv ) > 2:
 	MOUNT_DIRECTORY = sys.argv[2]
 
+def start_server():
+    server_address = ("", PORT)
+    server = BaseHTTPServer.HTTPServer(server_address, Mp3Handler)
+    server.serve_forever()
+
 def exeC( cmd, prams="" ):
   try:
     os.system( "%s %s" % ( cmd, prams ) )
@@ -26,7 +31,6 @@ def exeC( cmd, prams="" ):
 
 locator = Mp3Locator()
 locator.updateRoot( MOUNT_DIRECTORY )
-
 
 class Mp3Handler(SimpleHTTPServer.SimpleHTTPRequestHandler):
 
@@ -114,7 +118,7 @@ class Mp3Handler(SimpleHTTPServer.SimpleHTTPRequestHandler):
     
       result["lists"] = locator.listDirs()
       result["currentList"] = locator.current()
-        
+
       return result
       
     def ip(self):
@@ -168,14 +172,11 @@ class Mp3Handler(SimpleHTTPServer.SimpleHTTPRequestHandler):
         print( "Error in post handler for mp3 server:\n %s" % e )
         self.wfile.write( "[]" )        
 
-def start_server():
-    server_address = ("", PORT)
-    server = BaseHTTPServer.HTTPServer(server_address, Mp3Handler)
-    server.serve_forever()
 
 if __name__ == "__main__":
     print( "Started moc server and web server on port: %s, reading music recursively from directory: %s" % ( PORT, MOUNT_DIRECTORY ) )
     start_server()
+
 
 
 
