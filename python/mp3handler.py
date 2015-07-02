@@ -11,12 +11,14 @@ class Mp3CommandHandler():
     def processExec(self, command):
         result = []
 
+        print "Processing command: %s" % str(command)
+
         # Get the information from the mocp process
         com = Popen(command, stdout=PIPE, stderr=PIPE).communicate()
 
-        # Check to see if the server is in an error state; if so restart
+        # Check to see if the server is in an fatal error state; if so restart
         # the mocp server
-        if( "FATAL_ERROR" in com[1]):
+        if "FATAL_ERROR" in com[1]:
             self.startSoundServer()
         else:
             result = com[0].split("\n")[0:-1]
@@ -26,39 +28,29 @@ class Mp3CommandHandler():
 
 	# Mp3 player commands
     def startSoundServer(self):
-        print( "Starting server" )
-        self.processExec( [ "mocp", "-x" ] )
         self.processExec( [ "mocp", "-S" ] )
 
     def play(self):
       self.stop()
-      print( "playing from: %s" % self.locator.current() );
-      #processExec( "mocp", "-p -a '%s'" % self.locator.current() )
       self.processExec( ["mocp", "-p", "-a", self.locator.current() ] )
 
     def pause(self):
-      print "pause"
       self.processExec( [ "mocp", "--toggle-pause" ] )
 
     def stop(self):
-      print "stop"
       self.processExec( [ "mocp", "-c", "-s" ] )
 
     def next(self):
-      print "next track"
       self.processExec( [ "mocp", "--next" ] )
 
     def prev(self):
-      print "prev track"
       self.processExec( [ "mocp", "--prev" ] )
 
     def next_album(self):
-      print "next album"
       self.stop()
       return self.locator.next()
 
     def prev_album(self):
-      print "next album"
       self.stop()
       return self.locator.prev()
 
@@ -87,7 +79,7 @@ class Mp3CommandHandler():
         raw = []
 
         try: raw = self.processExec(["mocp", "-i"])
-        except Exception as e: 
+        except Exception as e:
           print "Could not get MOCP information: %s" % e
 
         for entry in map( lambda x: x.split(": "), raw ):
@@ -103,11 +95,9 @@ class Mp3CommandHandler():
     def refresh_data(self):
         self.stop()
         self.locator.updateRoot()
-        print "Dirs loaded...", self.locator.listDirs()
         return self.locator.listDirs()
 
     def shuffle(self):
-        print "toggle shuffle"
         self.processExec( [ "mocp", "--toggle", "shuffle" ] )
 
     def handle(self, action, response, data):
