@@ -6,7 +6,7 @@ body {
 #controls {
 }
 
-#controls > button {
+#controls > input[type="button"]{
   font-size: 20px;
   margin-bottom: 5px;
   display: block;
@@ -34,12 +34,16 @@ body {
   background-color: #0A0;
 }
 
+#play-bar, .progress-bar {
+  height: 40px;
+  font-size: 20px;
+}
+
 #play-bar {
   width: 100%;
   position: relative;
   background-color: #575757;
   text-align: center;
-  height: 20px;
   margin-bottom: 5px;
 }
 
@@ -49,6 +53,7 @@ body {
 
 .song-name {
   position: relative;
+  top: 6px;
   width: 100%;
   z-index: 10;
   color: #FFF;
@@ -59,10 +64,9 @@ body {
   z-index: 5;
   top:0px;
   left: 0px;
-  height: 20px;
   background-color: #A00;
   transition: width 2s;
   -webkit-transition: width 2s;
   -webkit-transition-timing-function: linear;
-  transition-timing-function: linear;  
+  transition-timing-function: linear;
 }

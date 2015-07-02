@@ -40,6 +40,16 @@
       return result + "%";
     }
 
+    $scope.getProgressText = function() {
+      var result = "- No Title -";
+
+      if( $scope.currentState["title"] ) {
+        result = $scope.currentState["title"];
+      }
+
+      return result;
+    }
+
     // Wrapper for button clicks to disable actions
     // until all of the requests are resolved
     $scope.buttonPlayerAction = function( action, callback ) {
