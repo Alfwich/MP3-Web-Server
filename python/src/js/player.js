@@ -28,21 +28,6 @@
       }
     }
 
-    $scope.callbacks = {
-      "next_album" : function(data) {
-        $scope.syncPlayer();
-      },
-
-      "prev_album" : function(data) {
-        $scope.syncPlayer();
-      },
-
-      "refresh_data" : function() {
-        $scope.syncPlayer();
-      }
-
-    }
-
     $scope.computeDuration = function() {
       var currentTime = processTime( $scope.currentState.currenttime ),
           totalTime = processTime( $scope.currentState.totaltime ),
@@ -77,9 +62,9 @@
       })
       .done(callback)
       .always(function(data){
-        // Provide a action callback if it is defined
-        if( typeof $scope.callbacks[action] === "function" ) {
-          $scope.callbacks[action]( data );
+        // Sync the player if this was not a info action
+        if( action !== "info" ) {
+          $scope.syncPlayer();
         }
         $scope.requests.pop();
         $scope.$apply();
