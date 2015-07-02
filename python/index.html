@@ -25,7 +25,7 @@
     </div>
   </div>
   <div class="row">
-    <div class="col-xs-5"id="controls">
+    <div class="col-xs-8"id="controls">
       <input type="button" class="btn btn-default" ng-click="buttonPlayerAction('play')" value="{{(currentState.state=='PLAY'||currentState.state=='PAUSE')?'Restart':'Play'}}" />
       <input type="button" class="btn btn-default" ng-click="buttonPlayerAction('pause')" value="{{currentState.state=='PAUSE'?'Continue':'Pause'}}" />
       <input type="button" class="btn btn-default" ng-click="buttonPlayerAction('next')" value="Next"/>
@@ -33,9 +33,10 @@
       <input type="button" class="btn btn-default" ng-click="buttonPlayerAction('next_album')" value="Next Album"/>
       <input type="button" class="btn btn-default" ng-click="buttonPlayerAction('prev_album')" value="Prev Album"/>
       <input type="button" class="btn btn-default" ng-click="buttonPlayerAction('refresh_data')" value="Refresh Playlists"/>
-      <input type="button" class="btn btn-default" ng-click="buttonPlayerAction('shuffle')" value="Toggle Shuffle"/>
+      <input type="button" class="btn btn-default" ng-click="buttonPlayerAction('shuffle')" value="{{(currentState.shuffle)?'Disable Shuffle':'Enable Shuffle'}}"/>
+      <input type="button" class="btn btn-default" ng-click="buttonPlayerAction('repeat')" value="{{(currentState.repeat)?'Disable Repeat':'Enable Repeat'}}"/>
     </div>
-    <div class="col-xs-7">
+    <div class="col-xs-4">
       <div class="playlist-tile" ng-repeat="list in currentState.lists" ng-class="{ selected: list==currentState.currentList}">
         {{list}}
       </div>
