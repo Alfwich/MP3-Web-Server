@@ -74,5 +74,5 @@ class Mp3Handler(SimpleHTTPServer.SimpleHTTPRequestHandler):
 
 
 if __name__ == "__main__":
-    print( "Started moc server and web server on port: %s, reading music recursively from directory: %s" % ( PORT, MOUNT_DIRECTORY ) )
+    print( "Started web server on port: %s, reading music devices from directory: %s" % ( PORT, MOUNT_DIRECTORY ) )
     start_server()
