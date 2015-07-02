@@ -1,6 +1,7 @@
 import os, sys, glob
 
 class Mp3Locator:
+  root = ""
   dirs = []
 
   def __init__( self, root ):
@@ -15,11 +16,15 @@ class Mp3Locator:
       print( "Could not find the directory for media: %s" % root )
     return result
 
-  def updateRoot( self, newRoot ):
+  def updateRoot( self, newRoot=None ):
+
+    if newRoot is None:
+      newRoot = self.root
 
     if not newRoot is None and len(newRoot):
 
       self.dirs = []
+      self.root = newRoot
 
       # Find all of the sub-directories within the root and add the child folders to the dir list
       # We do this because we are expecting the root folder to be the mount directory for media devices

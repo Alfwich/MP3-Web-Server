@@ -1,12 +1,6 @@
 import threading, webbrowser, cgi, BaseHTTPServer, SimpleHTTPServer, os, sys, json
 from subprocess import *
 
-def exeC( cmd, prams="" ):
-  try:
-    os.system( "%s %s" % ( cmd, prams ) )
-  except:
-    print "Could not execute command: %s, with prams: %s" % ( cmd, prams )
-
 class Mp3CommandHandler():
 
     serverStarted = False
@@ -20,14 +14,12 @@ class Mp3CommandHandler():
         # Get the information from the mocp process
         com = Popen(command, stdout=PIPE, stderr=PIPE).communicate()
 
-        # Check to make sure the stderr field is not populated; if it is then
-        # the most likely case is the sound server is not running so attempt to
-        # start the sound server. We do not attempt to run the command because
-        # the server will be in a fresh state
-        if( com[1] != "" ):
+        # Check to see if the server is in an error state; if so restart
+        # the mocp server
+        if( "FATAL_ERROR" in com[1]):
             self.startSoundServer()
         else:
-            result = raw.split("\n")[0:-1]
+            result = com[0].split("\n")[0:-1]
 
         return result
 
@@ -35,31 +27,30 @@ class Mp3CommandHandler():
 	# Mp3 player commands
     def startSoundServer(self):
         print( "Starting server" )
-        exeC( "mocp", "-x" )
-        exeC( "mocp", "-S" )
-        self.serverStarted = True
+        self.processExec( [ "mocp", "-x" ] )
+        self.processExec( [ "mocp", "-S" ] )
 
     def play(self):
       self.stop()
       print( "playing from: %s" % self.locator.current() );
-      #exeC( "mocp", "-p -a '%s'" % self.locator.current() )
-      self.processExec( ["mocp", "-p", "-a %s" % self.locator.current() ] )
+      #processExec( "mocp", "-p -a '%s'" % self.locator.current() )
+      self.processExec( ["mocp", "-p", "-a", self.locator.current() ] )
 
     def pause(self):
       print "pause"
-      exeC( "mocp", "--toggle-pause" )
+      self.processExec( [ "mocp", "--toggle-pause" ] )
 
     def stop(self):
       print "stop"
-      exeC( "mocp", "-c -s" )
+      self.processExec( [ "mocp", "-c", "-s" ] )
 
     def next(self):
       print "next track"
-      exeC( "mocp", "--next" )
+      self.processExec( [ "mocp", "--next" ] )
 
     def prev(self):
       print "prev track"
-      exeC( "mocp", "--prev" )
+      self.processExec( [ "mocp", "--prev" ] )
 
     def next_album(self):
       print "next album"
@@ -95,8 +86,9 @@ class Mp3CommandHandler():
         result = {}
         raw = []
 
-        try: raw = self.getCommandOutput( ["mocp", "-i"])
-        except: print "Could not get MOCP information!"
+        try: raw = self.processExec(["mocp", "-i"])
+        except Exception as e: 
+          print "Could not get MOCP information: %s" % e
 
         for entry in map( lambda x: x.split(": "), raw ):
             if len(entry) == 2:
@@ -110,18 +102,15 @@ class Mp3CommandHandler():
 
     def refresh_data(self):
         self.stop()
-        self.locator.updateRoot( MOUNT_DIRECTORY )
+        self.locator.updateRoot()
         print "Dirs loaded...", self.locator.listDirs()
         return self.locator.listDirs()
 
     def shuffle(self):
         print "toggle shuffle"
-        exeC( "mocp", "--toggle shuffle" )
+        self.processExec( [ "mocp", "--toggle", "shuffle" ] )
 
     def handle(self, action, response, data):
-        # Start the sound server if it has not already been attempted to be started
-        if not self.serverStarted:
-            self.startSoundServer()
 
         # Handle the action if it is defined on this object
         if hasattr(self, action):
