@@ -59,14 +59,19 @@ body {
   color: #FFF;
 }
 
+#play-bar.playing * .progress-bar {
+  transition: width 2s;
+  -webkit-transition: width 2s;
+  -webkit-transition-timing-function: linear;
+  transition-timing-function: linear;
+}
+
 .progress-bar {
   position: absolute;
   z-index: 5;
   top:0px;
   left: 0px;
   background-color: #A00;
-  transition: width 2s;
-  -webkit-transition: width 2s;
-  -webkit-transition-timing-function: linear;
-  transition-timing-function: linear;
+  transition: width 0s;
+  -webkit-transition: width 0s;
 }
