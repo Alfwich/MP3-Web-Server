@@ -11,7 +11,7 @@ class Mp3CommandHandler():
     def processExec(self, command):
         result = []
 
-        print "Processing command: %s" % str(command)
+        print "Processing command: %s" % " ".join(str(command))
 
         # Get the information from the mocp process
         com = Popen(command, stdout=PIPE, stderr=PIPE).communicate()
@@ -19,6 +19,7 @@ class Mp3CommandHandler():
         # Check to see if the server is in an fatal error state; if so restart
         # the mocp server
         if "FATAL_ERROR" in com[1]:
+            print "Starting MOCP server"
             self.startSoundServer()
         else:
             result = com[0].split("\n")[0:-1]
