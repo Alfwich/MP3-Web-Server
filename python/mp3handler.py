@@ -14,16 +14,22 @@ class Mp3CommandHandler():
     def __init__( self, locator ):
         self.locator = locator
 
-    def getCommandOutput(self, command):
-      result = []
+    def processExec(self, command):
+        result = []
 
-      # Get the information from the mocp process
-      raw = Popen(command, stdout=PIPE).communicate()[0]
+        # Get the information from the mocp process
+        com = Popen(command, stdout=PIPE, stderr=PIPE).communicate()
 
-      # Format the string into a understandable format
-      result = raw.split("\n")[0:-1]
+        # Check to make sure the stderr field is not populated; if it is then
+        # the most likely case is the sound server is not running so attempt to
+        # start the sound server. We do not attempt to run the command because
+        # the server will be in a fresh state
+        if( com[1] != "" ):
+            self.startSoundServer()
+        else:
+            result = raw.split("\n")[0:-1]
 
-      return result
+        return result
 
 
 	# Mp3 player commands
@@ -36,7 +42,8 @@ class Mp3CommandHandler():
     def play(self):
       self.stop()
       print( "playing from: %s" % self.locator.current() );
-      exeC( "mocp", "-p -a '%s'" % self.locator.current() )
+      #exeC( "mocp", "-p -a '%s'" % self.locator.current() )
+      self.processExec( ["mocp", "-p", "-a %s" % self.locator.current() ] )
 
     def pause(self):
       print "pause"
