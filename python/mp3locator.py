@@ -1,10 +1,11 @@
-import os
-import sys
-import glob
+import os, sys, glob
 
 class Mp3Locator:
   dirs = []
-  
+
+  def __init__( self, root ):
+    self.updateRoot( root )
+
   def listSubDirs( self, root ):
     result = []
     try:
@@ -16,7 +17,7 @@ class Mp3Locator:
 
   def updateRoot( self, newRoot ):
 
-    if len(newRoot):
+    if not newRoot is None and len(newRoot):
 
       self.dirs = []
 
@@ -24,7 +25,7 @@ class Mp3Locator:
       # We do this because we are expecting the root folder to be the mount directory for media devices
       # and want to support play-lists through folder structure
       for file in map( lambda x: "%s/%s"%(newRoot,x), self.listSubDirs( newRoot )):
-      
+
         # Find the folders in the media device and index each play-list
         if os.path.isdir(file):
           for innerFile in map( lambda x: "%s/%s"%(file,x), self.listSubDirs(file)):
@@ -42,11 +43,10 @@ class Mp3Locator:
     if len(self.dirs):
       self.dirs.insert(0,self.dirs.pop())
     return self.current()
-  
+
   def current( self ):
     if len(self.dirs) > 0:
       return self.dirs[0]
-  
+
   def listDirs(self):
     return sorted(self.dirs)
-
