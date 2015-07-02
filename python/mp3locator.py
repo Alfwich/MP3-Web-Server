@@ -3,6 +3,7 @@ import os, sys, glob
 class Mp3Locator:
   root = ""
   dirs = []
+  loaderOrder = []
 
   def __init__( self, root ):
     self.updateRoot( root )
@@ -37,6 +38,9 @@ class Mp3Locator:
             if os.path.isdir( innerFile ):
               self.dirs.append( innerFile )
 
+      # Copy the dirs list to maintain the loaded order of the playlists
+      self.loaderOrder = list(self.dirs)
+
     return self.current()
 
   def next( self ):
@@ -54,4 +58,6 @@ class Mp3Locator:
       return self.dirs[0]
 
   def listDirs(self):
-    return sorted(self.dirs)
+    return self.loaderOrder
+
+
