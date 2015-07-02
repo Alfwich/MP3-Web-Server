@@ -26,8 +26,8 @@
   </div>
   <div class="row">
     <div class="col-xs-5"id="controls">
-      <input type="button" class="btn btn-default" ng-click="buttonPlayerAction('play')" value="{{currentState.state=='PLAY'?'Restart':'Play'}}" />
-      <input type="button" class="btn btn-default" ng-click="buttonPlayerAction('pause')" value="Pause" />
+      <input type="button" class="btn btn-default" ng-click="buttonPlayerAction('play')" value="{{(currentState.state=='PLAY'||currentState.state=='PAUSE')?'Restart':'Play'}}" />
+      <input type="button" class="btn btn-default" ng-click="buttonPlayerAction('pause')" value="{{currentState.state=='PAUSE'?'Continue':'Pause'}}" />
       <input type="button" class="btn btn-default" ng-click="buttonPlayerAction('next')" value="Next"/>
       <input type="button" class="btn btn-default" ng-click="buttonPlayerAction('prev')" value="Prev"/>
       <input type="button" class="btn btn-default" ng-click="buttonPlayerAction('next_album')" value="Next Album"/>
