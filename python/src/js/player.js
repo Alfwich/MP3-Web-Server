@@ -74,7 +74,9 @@
       .always(function(data){
         // Sync the player if this was not a info action
         if( action !== "info" ) {
-          $scope.syncPlayer();
+          setTimeout( function() {
+            $scope.syncPlayer();
+          }, 250 );
         }
         $scope.requests.pop();
         $scope.$apply();
@@ -87,13 +89,13 @@
       $scope.playerAction( "info", function(data){
         if( data && data["output"] ) {
           clearTimeout( $scope.syncHandle );
-          $scope.syncHandle = setTimeout( $scope.syncPlayer, 2000 );
+          $scope.syncHandle = setTimeout( $scope.syncPlayer, 8000 );
           $scope.currentState = data["output"];
           $scope.$apply();
         }
       });
     };
 
-    setTimeout( $scope.syncPlayer, 2000 );
+    $scope.syncPlayer()
   });
 })()

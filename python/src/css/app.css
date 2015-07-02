@@ -60,10 +60,6 @@ body {
 }
 
 #play-bar.playing * .progress-bar {
-  transition: width 2s;
-  -webkit-transition: width 2s;
-  -webkit-transition-timing-function: linear;
-  transition-timing-function: linear;
 }
 
 .progress-bar {
@@ -72,6 +68,4 @@ body {
   top:0px;
   left: 0px;
   background-color: #A00;
-  transition: width 0s;
-  -webkit-transition: width 0s;
 }
