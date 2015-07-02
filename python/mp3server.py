@@ -103,6 +103,24 @@ class Mp3Handler(SimpleHTTPServer.SimpleHTTPRequestHandler):
       print "next album"
       self.stop()
       return locator.prev()
+
+    def _processListName( self, name ):
+      result = name
+      name = name.replace("\\", "/" )
+      comps = name.split("/")
+      if len(comps) > 1:
+        result = " ".join( comps[-2:] )
+
+      return result 
+
+    def _processLists( self, listNames ):
+      result = []
+
+      for name in listNames:
+        result.append( self._processListName( name ) )
+
+      return result
+        
     
     def info(self):
       result = {}
@@ -116,8 +134,8 @@ class Mp3Handler(SimpleHTTPServer.SimpleHTTPRequestHandler):
           result[entry[0].lower()] = entry[1]
 
     
-      result["lists"] = locator.listDirs()
-      result["currentList"] = locator.current()
+      result["lists"] = self._processLists( locator.listDirs() )
+      result["currentList"] = self._processListName( locator.current() )
 
       return result
       

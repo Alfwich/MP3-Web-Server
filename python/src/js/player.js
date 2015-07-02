@@ -17,6 +17,7 @@
 
     $scope.currentState = {};
     $scope.requests = [];
+    $scope.syncHandle = null;
     $scope.requestUrl = "index.html";
 
     // Get the saved requestUrl from localstorage if it exists
@@ -90,7 +91,8 @@
     $scope.syncPlayer = function(){
       $scope.playerAction( "info", function(data){
         if( data && data["output"] ) {
-          setTimeout( $scope.syncPlayer, 2000 );
+          clearTimeout( $scope.syncHandle );
+          $scope.syncHandle = setTimeout( $scope.syncPlayer, 2000 );
           $scope.currentState = data["output"];
           $scope.$apply();
         }
