@@ -18,7 +18,7 @@
     $scope.currentState = {};
     $scope.requests = [];
     $scope.syncHandle = null;
-    $scope.requestUrl = "index.html";
+    $scope.requestUrl = "/";
 
     // Get the saved requestUrl from localstorage if it exists
     if( localStorage ) {
