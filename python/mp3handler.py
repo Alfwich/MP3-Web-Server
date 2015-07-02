@@ -4,6 +4,8 @@ from subprocess import *
 class Mp3CommandHandler():
 
     serverStarted = False
+    shuffleEnabled = False
+    repeatEnabled = False
 
     def __init__( self, locator ):
         self.locator = locator
@@ -90,6 +92,8 @@ class Mp3CommandHandler():
 
         result["lists"] = self._processLists( self.locator.listDirs() )
         result["currentList"] = self._processListName( self.locator.current() )
+        result["repeat"] = self.repeatEnabled
+        result["shuffle"] = self.shuffleEnabled
 
         return result
 
@@ -99,7 +103,12 @@ class Mp3CommandHandler():
         return self.locator.listDirs()
 
     def shuffle(self):
+        self.shuffleEnabled = not self.shuffleEnabled
         self.processExec( [ "mocp", "--toggle", "shuffle" ] )
+
+    def repeat(self):
+        self.repeatEnabled = not self.repeatEnabled
+        self.processExec( [ "mocp", "--toggle", "repeat" ] )
 
     def handle(self, action, response, data):
 
