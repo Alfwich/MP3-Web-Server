@@ -31,6 +31,8 @@ class Mp3CommandHandler():
 
 	# Mp3 player commands
     def startSoundServer(self):
+        self.shuffleEnabled = False
+        self.repeatEnabled = False
         self.processExec( [ "mocp", "-S" ] )
 
     def play(self):
