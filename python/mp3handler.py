@@ -13,7 +13,7 @@ class Mp3CommandHandler():
     def processExec(self, command):
         result = []
 
-        print "Processing command: %s" % " ".join(command)
+        print "Processing command: '%s'" % " ".join(command)
 
         # Get the information from the mocp process
         com = Popen(command, stdout=PIPE, stderr=PIPE).communicate()
@@ -27,7 +27,6 @@ class Mp3CommandHandler():
             result = com[0].split("\n")[0:-1]
 
         return result
-
 
 	# Mp3 player commands
     def startSoundServer(self):
