@@ -1,12 +1,5 @@
 (function(){
 
-  var updateProgressBar = function(current, total) {
-    $("#progress-bar")
-      .finish()
-      .animate( { width: ((current/total)*100)+"%"}, 0, "linear" )
-      .animate( { width: "100%"}, (total-current)*1000, "linear"  );
-  }
-
   app.controller('main', function($scope) {
 
     $scope.currentState = {};
@@ -83,8 +76,8 @@
           $scope.currentState = data["output"];
           var current = parseInt($scope.currentState.currentsec),
               total = parseInt($scope.currentState.totalsec);
-          updateProgressBar( current, total );
           clearTimeout( $scope.syncHandle );
+
           // Setup the info callback to happen 1 seconds after the song ends
           $scope.syncHandle = setTimeout( $scope.syncPlayer, (total-current+1)*1000 );
         }
