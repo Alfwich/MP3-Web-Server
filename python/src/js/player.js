@@ -77,9 +77,8 @@
           var current = parseInt($scope.currentState.currentsec),
               total = parseInt($scope.currentState.totalsec);
           clearTimeout( $scope.syncHandle );
-
           // Setup the info callback to happen 1 seconds after the song ends
-          $scope.syncHandle = setTimeout( $scope.syncPlayer, (total-current+1)*1000 );
+          $scope.syncHandle = setTimeout( $scope.syncPlayer, ((total-current+1)*1000)||10000 );
         }
       });
     };
