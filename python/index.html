@@ -20,7 +20,7 @@
 <body ng-app="mp3-player" ng-controller="main">
   <div id="play-bar" class="row" ng-class="{ playing: currentState.state == 'PLAY'}">
     <div class="col-xs-12">
-      <div class="progress-bar" ng-style="{ width:computeDuration() }"></div>
+      <div id="progress-bar" class="progress-bar"></div>
       <div class="song-name">{{getProgressText()}}</div>
     </div>
   </div>

@@ -1,16 +1,10 @@
 (function(){
 
-  var processTime = function(t) {
-      var result = null;
-
-      if( t && typeof t === "string" ) {
-        var comps = t.split(":");
-        if( comps.length == 2 ) {
-          result = parseInt(comps[0])*60 + parseInt(comps[1]);
-        }
-      }
-
-      return result;
+  var updateProgressBar = function(current, total) {
+    $("#progress-bar")
+      .finish()
+      .animate( { width: ((current/total)*100)+"%"}, 0, "linear" )
+      .animate( { width: "100%"}, (total-current)*1000, "linear"  );
   }
 
   app.controller('main', function($scope) {
@@ -24,30 +18,23 @@
     if( localStorage ) {
       var item;
       if( item = localStorage.getItem("MP3-OVERRIDE-URL")) {
+        console.log( "Replacing requestUrl with the provided url: " + item );
         $scope.requestUrl = item;
       }
     }
 
-    $scope.computeDuration = function() {
-      var currentTime = processTime( $scope.currentState.currenttime ),
-          totalTime = processTime( $scope.currentState.totaltime ),
-          result = 0;
-
-      if( currentTime !== null && totalTime !== null ) {
-        result = currentTime / totalTime * 100;
-      }
-
-      return result + "%";
-    }
-
     $scope.getProgressText = function() {
-      var result = "- No Title -";
+      var result = [];
 
-      if( $scope.currentState["title"] ) {
-        result = $scope.currentState["title"];
+      if( $scope.currentState["artist"] ) {
+        result.push( $scope.currentState["artist"] );
       }
 
-      return result;
+      if( $scope.currentState["songtitle"] ) {
+        result.push( $scope.currentState["songtitle"] );
+      }
+
+      return result.join(", ") || "No Title";
     }
 
     // Wrapper for button clicks to disable actions
@@ -72,12 +59,17 @@
       })
       .done(callback)
       .always(function(data){
+
         // Sync the player if this was not a info action
         if( action !== "info" ) {
+
+          // Wrap the sync call in a timeout to allow the effects
+          // of the previous action to take effect
           setTimeout( function() {
             $scope.syncPlayer();
           }, 250 );
         }
+
         $scope.requests.pop();
         $scope.$apply();
       });
@@ -88,10 +80,13 @@
     $scope.syncPlayer = function(){
       $scope.playerAction( "info", function(data){
         if( data && data["output"] ) {
-          clearTimeout( $scope.syncHandle );
-          $scope.syncHandle = setTimeout( $scope.syncPlayer, 8000 );
           $scope.currentState = data["output"];
-          $scope.$apply();
+          var current = parseInt($scope.currentState.currentsec),
+              total = parseInt($scope.currentState.totalsec);
+          updateProgressBar( current, total );
+          clearTimeout( $scope.syncHandle );
+          // Setup the info callback to happen 1 seconds after the song ends
+          $scope.syncHandle = setTimeout( $scope.syncPlayer, (total-current+1)*1000 );
         }
       });
     };
