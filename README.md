@@ -14,5 +14,19 @@ useage:
 	```
 
 	EX: python mp3server.py 8000 ~/Music/
-		This will start the python simple http server listening on port 8000 and reading all the music, recursivly, in the directory ~/Music/
+	This will start the python simple http server listening on port 8000 and reading all music devices in the ~/Music folder. For music to be picked up and played music needs to be seperated into playlist folders per device.
+	For example:
+	
+	```
+	~/media:
+		device1:
+			playlist1:
+			playlist2:
+		device2:
+			playlist1:
+			playlist2:			
+		
+	```
+	Will load the 4 playlists on the two devices which mount in the ~/Music folder.
+	
 
