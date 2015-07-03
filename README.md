@@ -18,15 +18,19 @@ This will start the python simple http server listening on port 8000 and reading
 
 Example
 ======
+Executing:
+```
 python mp3server.py 8000 ~/Music/
 ```
+with a directory structure:
+```
 ~/media:
- device1:
-  playlist1:
-  playlist2:
- device2:
-  playlist1:
-  playlist2:			
+  device1:
+    playlist1:
+    playlist2:
+  device2:
+    playlist1:
+    playlist2:			
 ```
 Will load the 4 playlists on the two devices which mount in the ~/Music folder.
 
